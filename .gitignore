@@ -1,3 +1,5 @@
 .venv
 *.pyc
 corporate_uk
+*.csv
+output
