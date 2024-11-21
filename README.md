@@ -39,12 +39,9 @@ cd $Env:SPARK_HOME; spark-class org.apache.spark.deploy.history.HistoryServer
 
 ## Spark Job Performance Optimisation
 
-The largest of the four datasets is ```filings.csv``` (2042 MB). Since csv files are splittable by Spark with a default maximum block size of 128 MB, to maximise parallelism we should use 16 CPU cores (2042 / 128 = 15.95).
+In total, the size of all the input files is 6747 MB. Since the default value for ```spark.sql.files.maxPartitionBytes``` is 128 MB, there will be 53 partitions when all four datasets are read. To maximise parallelism while also minimising CPU idle time after shuffles I would choose approximately 53 / 2 total cores for the Spark cluster. Since Spark performance has been shown to bottleneck when using more than four cores per executor, I would choose to use 6 executors with 4 cores each for this Spark application.
 
-For example, reading the ```filings.csv``` data using 4 cores ```spark = SparkSession.builder.master('local[4]').getOrCreate()``` allows 4 data blocks to be read simultaenously and the total job duration is 14 seconds.
+As an example, I have testing running the Spark job ```local_jobs.py``` in Spark local mode with both 4 and 1 cores. 4 cores took 58 seconds and 1 core took 2.4 minutes.
 
-Using just 2 cores would halve the parallelism and job duration increases to 21 seconds.
+When investigating the event timelines for reading one of the files. Clearly running with 4 cores benefits job performance as Spark is able to to treat CSV as a splittable file format and read it in parallel from multiple cores.
 
-2 cores: ![2 cores](https://github.com/user-attachments/assets/9b6457a7-5fc2-4eb0-886f-d37289a9424d)
-
-4 cores: ![4 cores](https://github.com/user-attachments/assets/cd9b562e-e93d-46f8-8fba-c866e86b4b95)
