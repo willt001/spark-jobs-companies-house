@@ -4,7 +4,7 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType, 
 
 
 def get_spark(no_cores: int = 1) -> SparkSession:
-    return SparkSession.builder.master(f'local[{no_cores}]').getOrCreate()
+    return SparkSession.builder.appName('corporate_uk').master(f'local[{no_cores}]').getOrCreate()
 
 def read_companies(spark: SparkSession, fpath: str) -> DataFrame:
     schema = StructType([
@@ -142,7 +142,7 @@ def write_dataframe(df: DataFrame, fpath: str) -> None:
     df.write.mode('OVERWRITE').csv(fpath, header=True)
 
 if __name__ == "__main__":
-    spark = get_spark(4)
+    spark = get_spark(no_cores=4)
     companies = read_companies(spark, './corporate_uk/companies.csv')
     sic_codes = read_sic_codes(spark, './corporate_uk/companies_sic_codes.csv')
     filings = read_filings(spark, './corporate_uk/filings.csv')
