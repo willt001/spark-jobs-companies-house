@@ -55,5 +55,10 @@ When investigating the event timelines for reading one of the files, clearly run
 4 cores:
 ![4 cores](https://github.com/user-attachments/assets/7a887ac9-475a-41cd-8946-893eec062a31)
 
+## Running the jobs on AWS Glue
+
+I have added a slightly modified version of ```local_jobs.py``` called ```glue_jobs.py```. This script can be imported into AWS Glue Studio and accepts ```BUCKET_NAME``` as a parameter where the input files will be stored and output files written.
+
+As per the performance optimisation, I am using 6 of the G 1X workers (4 cores and 16 GB RAM each) to run this job in Glue.
 
 
