@@ -13,7 +13,7 @@ def get_spark_standalone(spark_url: str, no_executors: int, executor_cores: int,
         .config("spark.executor.instances", no_executors)
         .config("spark.executor.cores", f"{executor_cores}")
         .config("spark.executor.memory", f"{executor_memory}G")
-        .appName('FilmsTest')
+        .appName('corporate_uk')
         .getOrCreate()
     )
     return spark
