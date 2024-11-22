@@ -3,8 +3,20 @@ from pyspark.sql.functions import col, dense_rank, when, datediff, current_date,
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, DateType, BooleanType, DecimalType
 
 
-def get_spark(no_cores: int = 1) -> SparkSession:
+def get_spark_local_mode(no_cores: int = 1) -> SparkSession:
     return SparkSession.builder.appName('corporate_uk').master(f'local[{no_cores}]').getOrCreate()
+
+def get_spark_standalone(spark_url: str, no_executors: int, executor_cores: int, executor_memory: int) -> SparkSession:
+    spark = (
+        SparkSession.builder
+        .master(spark_url)
+        .config("spark.executor.instances", no_executors)
+        .config("spark.executor.cores", f"{executor_cores}")
+        .config("spark.executor.memory", f"{executor_memory}G")
+        .appName('FilmsTest')
+        .getOrCreate()
+    )
+    return spark
 
 def read_companies(spark: SparkSession, fpath: str) -> DataFrame:
     schema = StructType([
